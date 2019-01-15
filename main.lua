@@ -1,16 +1,19 @@
+
+love.graphics.setDefaultFilter('nearest', 'nearest')
 enemy = {}
 enemies_controller = {}
 enemies_controller.enemies = {}
+enemies_controller.image = love.graphics.newImage('assets/grumpycat.png')
 
 function love.load()
     player = {}
     player.x = 0
     player.y = 550
-    player.width = 80
-    player.height = 20
+    player.width = 0.1
+    player.image = love.graphics.newImage('assets/ufo.png')
     player.bullets = {}
-    player.cooldown_ref = 50
-    player.cooldown = 50
+    player.cooldown_ref = 60
+    player.cooldown = player.cooldown_ref
     player.speed = 2
     player.fire = function()
         if player.cooldown <= 0 then
@@ -18,7 +21,7 @@ function love.load()
             bullet = {}
             bullet.width = 10
             bullet.height = 10
-            bullet.x = player.x + player.width/2 - bullet.width/2
+            bullet.x = player.x + 20
             bullet.y = player.y
             table.insert(player.bullets, bullet)
         end
@@ -31,12 +34,11 @@ function enemies_controller:spawnEnemy(x, y)
     enemy = {}
     enemy.x = x
     enemy.y = y
-    enemy.width = 30
-    enemy.height = 30
+    enemy.width = 0.1
     enemy.bullets = {}
     enemy.cooldown_ref = 50
     enemy.cooldown = 50
-    enemy.speed = 2
+    enemy.speed = 0.8
     table.insert(self.enemies, enemy)
 end
 
@@ -77,18 +79,17 @@ function love.update(dt)
 end
 
 function love.draw()
+    love.graphics.setColor(255, 255, 255)
+
     -- draw the player
-    love.graphics.setColor(255, 0, 0)
-    love.graphics.rectangle("fill", player.x, player.y, player.width, player.height)
+    love.graphics.draw(player.image, player.x, player.y, 0, player.width)
 
     -- draw enemies
-    love.graphics.setColor(0, 0, 255)
     for _,enemy in pairs(enemies_controller.enemies) do
-        love.graphics.rectangle("fill", enemy.x, enemy.y, enemy.width, enemy.height)
+        love.graphics.draw(enemies_controller.image, enemy.x, enemy.y, 0, enemy.width)
     end
 
     -- draw bullets
-    love.graphics.setColor(255, 255, 255)
     for _,bullet in pairs(player.bullets) do
         love.graphics.rectangle("fill", bullet.x, bullet.y, bullet.width, bullet.height)
     end
