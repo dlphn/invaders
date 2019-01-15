@@ -66,7 +66,10 @@ function love.update(dt)
         player.fire()
     end
 
-    for _,enemy in pairs(enemies_controller.enemies) do
+    for i,enemy in ipairs(enemies_controller.enemies) do
+        if enemy.y > 600 then
+            table.remove(enemies_controller.enemies, i)
+        end
         enemy.y = enemy.y + 0.3
     end
 
