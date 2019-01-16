@@ -70,14 +70,14 @@ function love.update(dt)
         if enemy.y > 600 then
             table.remove(enemies_controller.enemies, i)
         end
-        enemy.y = enemy.y + 0.3
+        enemy.y = enemy.y + 60 * dt
     end
 
     for i,bullet in ipairs(player.bullets) do
         if bullet.y < -10 then
             table.remove(player.bullets, i)
         end
-        bullet.y = bullet.y - 2
+        bullet.y = bullet.y - 300 * dt
     end
 end
 
