@@ -16,6 +16,9 @@ function checkCollisions(enemies, bullets)
 end
 
 function love.load()
+    local music = love.audio.newSource('assets/music.mp3', 'static')
+    music:setLooping(true)
+    love.audio.play(music)
     game_over = false
     game_win = false
     background_image = love.graphics.newImage('assets/background.jpeg')
