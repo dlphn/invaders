@@ -1,5 +1,5 @@
 
-love.graphics.setDefaultFilter('nearest', 'nearest')
+love.graphics.setDefaultFilter('linear', 'linear')
 enemy = {}
 enemies_controller = {}
 enemies_controller.enemies = {}
