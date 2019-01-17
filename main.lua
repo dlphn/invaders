@@ -4,11 +4,46 @@ enemy = {}
 enemies_controller = {}
 enemies_controller.enemies = {}
 enemies_controller.image = love.graphics.newImage('assets/grumpycat.png')
+particle_systems = {}
+particle_systems.list = {}
+particle_systems.image = love.graphics.newImage('assets/dog.png')
+
+function particle_systems:spawn(x, y)
+    local psystem = {}
+    psystem.x = x
+    psystem.y = y
+    psystem.ps = love.graphics.newParticleSystem(particle_systems.image, 32)
+    psystem.ps:setParticleLifetime(2, 4)
+    psystem.ps:setEmissionRate(5)
+    psystem.ps:setSizeVariation(1)
+    psystem.ps:setLinearAcceleration(-20, -20, 20, 20)
+    psystem.ps:setColors(255, 255, 255, 255, 255, 255, 255, 0)
+    table.insert(particle_systems.list, psystem)
+end
+
+function particle_systems:draw()
+    for _, p in pairs(particle_systems.list) do
+        print(p.ps)
+        love.graphics.draw(p.ps, p.x, p.y)  -- not working
+        love.graphics.draw(particle_systems.image, p.x, p.y, 0, 0.1)
+    end
+end
+
+function particle_systems:update(dt)
+    for _, p in pairs(particle_systems.list) do
+        p.ps:update(dt)
+    end
+end
+
+function particle_systems:cleanup()
+    -- delete particle systems after a while
+end
 
 function checkCollisions(enemies, bullets)
     for i, e in pairs(enemies) do
         for _, b in pairs(bullets) do
             if b.y <= e.y + e.scaleFactor * e.height and b.x >= e.x and b.x + b.width <= e.x + e.scaleFactor * e.width then
+                particle_systems:spawn(e.x, e.y)
                 table.remove(enemies, i)
             end
         end
@@ -127,6 +162,8 @@ function love.draw()
     for _,enemy in pairs(enemies_controller.enemies) do
         love.graphics.draw(enemies_controller.image, enemy.x, enemy.y, 0, enemy.scaleFactor)
     end
+
+    particle_systems:draw()
 
     -- draw bullets
     for _,bullet in pairs(player.bullets) do
