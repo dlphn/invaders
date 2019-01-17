@@ -11,12 +11,14 @@ function love.load()
     player.y = 550
     player.width = 0.1
     player.image = love.graphics.newImage('assets/ufo.png')
+    player.fire_sound = love.audio.newSource('assets/laser.wav', 'static')
     player.bullets = {}
     player.cooldown_ref = 60
     player.cooldown = player.cooldown_ref
     player.speed = 2
     player.fire = function()
         if player.cooldown <= 0 then
+            love.audio.play(player.fire_sound)
             player.cooldown = player.cooldown_ref
             bullet = {}
             bullet.width = 10
