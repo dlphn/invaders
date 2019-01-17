@@ -16,6 +16,9 @@ function checkCollisions(enemies, bullets)
 end
 
 function love.load()
+    game_over = false
+    game_win = false
+    background_image = love.graphics.newImage('assets/background.jpeg')
     player = {}
     player.x = 0
     player.y = 550
@@ -35,24 +38,26 @@ function love.load()
             bullet.height = 10
             bullet.x = player.x + 20
             bullet.y = player.y
+            bullet.speed = 300
             table.insert(player.bullets, bullet)
         end
     end
-    enemies_controller:spawnEnemy(0, 0)
-    enemies_controller:spawnEnemy(40, 0)
+    for i = 0, 8 do
+        enemies_controller:spawnEnemy(i * 85, 0)
+    end 
 end
 
 function enemies_controller:spawnEnemy(x, y)
     enemy = {}
     enemy.x = x
     enemy.y = y
-    enemy.scaleFactor = 0.1
+    enemy.scaleFactor = 0.2
     enemy.width = enemies_controller.image:getWidth()
     enemy.height = enemies_controller.image:getHeight()
     enemy.bullets = {}
     enemy.cooldown_ref = 50
     enemy.cooldown = 50
-    enemy.speed = 3
+    enemy.speed = 60
     table.insert(self.enemies, enemy)
 end
 
@@ -80,18 +85,22 @@ function love.update(dt)
         player.fire()
     end
 
+    if #enemies_controller.enemies == 0 then
+        game_win = true
+    end
+
     for i,enemy in ipairs(enemies_controller.enemies) do
-        if enemy.y > 600 then
-            table.remove(enemies_controller.enemies, i)
+        if enemy.y >= love.graphics.getHeight() then
+            game_over = true
         end
-        enemy.y = enemy.y + 60 * dt
+        enemy.y = enemy.y + enemy.speed * dt
     end
 
     for i,bullet in ipairs(player.bullets) do
         if bullet.y < -10 then
             table.remove(player.bullets, i)
         end
-        bullet.y = bullet.y - 300 * dt
+        bullet.y = bullet.y - bullet.speed * dt
     end
 
     checkCollisions(enemies_controller.enemies, player.bullets)
@@ -99,6 +108,14 @@ end
 
 function love.draw()
     love.graphics.setColor(255, 255, 255)
+    love.graphics.draw(background_image, 0, 0, 0, 2)
+    
+    if game_over == true then
+        love.graphics.print('Game Over!')
+        return
+    elseif game_win == true then
+        love.graphics.print('You Won!')
+    end
 
     -- draw the player
     love.graphics.draw(player.image, player.x, player.y, 0, player.width)
