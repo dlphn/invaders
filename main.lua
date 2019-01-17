@@ -5,6 +5,16 @@ enemies_controller = {}
 enemies_controller.enemies = {}
 enemies_controller.image = love.graphics.newImage('assets/grumpycat.png')
 
+function checkCollisions(enemies, bullets)
+    for i, e in pairs(enemies) do
+        for _, b in pairs(bullets) do
+            if b.y <= e.y + e.scaleFactor * e.height and b.x >= e.x and b.x + b.width <= e.x + e.scaleFactor * e.width then
+                table.remove(enemies, i)
+            end
+        end
+    end
+end
+
 function love.load()
     player = {}
     player.x = 0
@@ -36,11 +46,13 @@ function enemies_controller:spawnEnemy(x, y)
     enemy = {}
     enemy.x = x
     enemy.y = y
-    enemy.width = 0.1
+    enemy.scaleFactor = 0.1
+    enemy.width = enemies_controller.image:getWidth()
+    enemy.height = enemies_controller.image:getHeight()
     enemy.bullets = {}
     enemy.cooldown_ref = 50
     enemy.cooldown = 50
-    enemy.speed = 0.8
+    enemy.speed = 3
     table.insert(self.enemies, enemy)
 end
 
@@ -81,6 +93,8 @@ function love.update(dt)
         end
         bullet.y = bullet.y - 300 * dt
     end
+
+    checkCollisions(enemies_controller.enemies, player.bullets)
 end
 
 function love.draw()
@@ -91,7 +105,7 @@ function love.draw()
 
     -- draw enemies
     for _,enemy in pairs(enemies_controller.enemies) do
-        love.graphics.draw(enemies_controller.image, enemy.x, enemy.y, 0, enemy.width)
+        love.graphics.draw(enemies_controller.image, enemy.x, enemy.y, 0, enemy.scaleFactor)
     end
 
     -- draw bullets
