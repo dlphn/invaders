@@ -1,40 +1,7 @@
+require 'enemies'
+require 'particle_systems'
+
 love.graphics.setDefaultFilter('linear', 'linear')
-enemy = {}
-enemies_controller = {}
-enemies_controller.enemies = {}
-enemies_controller.image = love.graphics.newImage('assets/grumpycat.png')
-particle_systems = {}
-particle_systems.list = {}
-particle_systems.image = love.graphics.newImage('assets/dog.png')
-
-function particle_systems:spawn(x, y)
-    local psystem = {}
-    psystem.x = x + 0.2 * enemies_controller.image:getWidth() / 2
-    psystem.y = y + 0.2 * enemies_controller.image:getHeight() / 2
-    psystem.ps = love.graphics.newParticleSystem(particle_systems.image, 32)
-    psystem.ps:setParticleLifetime(0, 1)
-    psystem.ps:setSizes(0.1, 0)
-    psystem.ps:setLinearAcceleration(-200, -200, 200, 200)
-    psystem.ps:setColors(255, 255, 255, 255, 255, 255, 255, 0)
-    psystem.ps:emit(32)
-    table.insert(particle_systems.list, psystem)
-end
-
-function particle_systems:draw()
-    for _, p in pairs(particle_systems.list) do
-        love.graphics.draw(p.ps, p.x, p.y)  -- not working
-    end
-end
-
-function particle_systems:update(dt)
-    for _, p in pairs(particle_systems.list) do
-        p.ps:update(dt)
-    end
-end
-
-function particle_systems:cleanup()
-    -- delete particle systems after a while
-end
 
 function checkCollisions(enemies, bullets)
     for i, e in pairs(enemies) do
@@ -53,7 +20,7 @@ function love.load()
     love.audio.play(music)
     game_over = false
     game_win = false
-    background_image = love.graphics.newImage('assets/background.jpeg')
+    background_image = love.graphics.newImage('assets/background.png')
     player = {}
     player.x = 0
     player.y = 550
@@ -80,32 +47,6 @@ function love.load()
     for i = 0, 8 do
         enemies_controller:spawnEnemy(i * 85, 0)
     end 
-end
-
-function enemies_controller:spawnEnemy(x, y)
-    enemy = {}
-    enemy.x = x
-    enemy.y = y
-    enemy.scaleFactor = 0.2
-    enemy.width = enemies_controller.image:getWidth()
-    enemy.height = enemies_controller.image:getHeight()
-    enemy.bullets = {}
-    enemy.cooldown_ref = 50
-    enemy.cooldown = 50
-    enemy.speed = 60
-    table.insert(self.enemies, enemy)
-end
-
-function enemy:fire()
-    if self.cooldown <= 0 then
-        self.cooldown = player.cooldown_ref
-        bullet = {}
-        bullet.width = 10
-        bullet.height = 10
-        bullet.x = self.x + self.width/2 - self.width/2
-        bullet.y = self.y
-        table.insert(self.bullets, bullet)
-    end
 end
 
 function love.update(dt)
@@ -144,7 +85,7 @@ end
 
 function love.draw()
     love.graphics.setColor(255, 255, 255)
-    love.graphics.draw(background_image, 0, 0, 0, 2)
+    love.graphics.draw(background_image, 0, 0, 0, 1.5)
     
     if game_over == true then
         love.graphics.print('Game Over!')
