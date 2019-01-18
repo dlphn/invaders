@@ -21,6 +21,7 @@ function love.load()
     game_over = false
     game_win = false
     background_image = love.graphics.newImage('assets/background.png')
+    firework_image = love.graphics.newImage('assets/firework.jpg')
     player = {}
     player.x = 0
     player.y = 550
@@ -50,15 +51,23 @@ function love.load()
 end
 
 function love.update(dt)
-    player.cooldown = player.cooldown - 300 * dt
-    if love.keyboard.isDown("right") then
-        player.x = player.x + player.speed
-    elseif love.keyboard.isDown("left") then
-        player.x = player.x - player.speed
+    if game_win == false and game_over == false then
+        player.cooldown = player.cooldown - 300 * dt
+        if love.keyboard.isDown("right") then
+            player.x = player.x + player.speed
+        elseif love.keyboard.isDown("left") then
+            player.x = player.x - player.speed
+        end
+
+        if love.keyboard.isDown("space") then
+            player.fire()
+        end
     end
 
-    if love.keyboard.isDown("space") then
-        player.fire()
+    if game_win == true then
+        if player.y > 100 then
+            player.y = player.y - player.speed * 100 * dt
+        end
     end
 
     if #enemies_controller.enemies == 0 then
@@ -88,10 +97,11 @@ function love.draw()
     love.graphics.draw(background_image, 0, 0, 0, 1.5)
     
     if game_over == true then
-        love.graphics.print('Game Over!')
+        love.graphics.printf({{255, 0, 0}, 'Game Over!'}, 100, 100, 200, 'center', 0, 2)
         return
     elseif game_win == true then
-        love.graphics.print('You Won!')
+        love.graphics.draw(firework_image, 0, 0, 0, 0.3)
+        love.graphics.print('You Won!', 10, 10)
     end
 
     -- draw the player
