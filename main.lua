@@ -1,4 +1,3 @@
-
 love.graphics.setDefaultFilter('linear', 'linear')
 enemy = {}
 enemies_controller = {}
@@ -10,22 +9,20 @@ particle_systems.image = love.graphics.newImage('assets/dog.png')
 
 function particle_systems:spawn(x, y)
     local psystem = {}
-    psystem.x = x
-    psystem.y = y
+    psystem.x = x + 0.2 * enemies_controller.image:getWidth() / 2
+    psystem.y = y + 0.2 * enemies_controller.image:getHeight() / 2
     psystem.ps = love.graphics.newParticleSystem(particle_systems.image, 32)
-    psystem.ps:setParticleLifetime(2, 4)
-    psystem.ps:setEmissionRate(5)
-    psystem.ps:setSizeVariation(1)
-    psystem.ps:setLinearAcceleration(-20, -20, 20, 20)
+    psystem.ps:setParticleLifetime(0, 1)
+    psystem.ps:setSizes(0.1, 0)
+    psystem.ps:setLinearAcceleration(-200, -200, 200, 200)
     psystem.ps:setColors(255, 255, 255, 255, 255, 255, 255, 0)
+    psystem.ps:emit(32)
     table.insert(particle_systems.list, psystem)
 end
 
 function particle_systems:draw()
     for _, p in pairs(particle_systems.list) do
-        print(p.ps)
         love.graphics.draw(p.ps, p.x, p.y)  -- not working
-        love.graphics.draw(particle_systems.image, p.x, p.y, 0, 0.1)
     end
 end
 
@@ -112,7 +109,7 @@ function enemy:fire()
 end
 
 function love.update(dt)
-    player.cooldown = player.cooldown - 1
+    player.cooldown = player.cooldown - 300 * dt
     if love.keyboard.isDown("right") then
         player.x = player.x + player.speed
     elseif love.keyboard.isDown("left") then
@@ -142,6 +139,7 @@ function love.update(dt)
     end
 
     checkCollisions(enemies_controller.enemies, player.bullets)
+    particle_systems:update(dt)
 end
 
 function love.draw()
