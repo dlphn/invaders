@@ -1,8 +1,10 @@
 # Grumpy Cat Invaders
 
-A remastered space invaders developed with [Löve <img src="https://love2d.org/w/images/thumb/6/68/love-app-0.10.png/240px-love-app-0.10.png" alt="drawing" width="10"/>](https://love2d.org/).
+A remastered space invaders developed with [Löve <img src="https://love2d.org/w/images/thumb/6/68/love-app-0.10.png/240px-love-app-0.10.png" alt="Löve logo" width="15"/>](https://love2d.org/).
 
-![Game screenshot](/assets/screen.png)
+<p align="center">
+<img src="assets/screen.png" alt="Game screenshot" width="300" />
+</p>
 
 ## Installation and running
 
